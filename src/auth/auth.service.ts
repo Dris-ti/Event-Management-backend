@@ -21,6 +21,10 @@ export class AuthService {
     private emailService: EmailService,
   ) {}
 
+  passwordHassing(password: string) {
+    return bcrypt.hash(password, 10);
+  }
+
   generateAccessToken(user) {
     const secret = process.env.ACCESS_TOKEN_SECRET;
     const expiry = process.env.ACCESS_TOKEN_EXPIRY;
