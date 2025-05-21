@@ -4,23 +4,25 @@ import {
   Column,
   CreateDateColumn,
   ManyToOne,
-  Unique
+  Unique,
+  JoinColumn,
+  OneToOne
 } from 'typeorm';
 import { USER } from './user.entity';
 import { EVENT } from './event.entity';
 
 @Entity()
-@Unique(['user', 'event'])
-
 export class BOOKING {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
 
-  @ManyToOne(() => USER, user => user.id, { onDelete: 'CASCADE' })
-  user: USER;
+  @OneToOne(() => USER, (user) => user.id, { nullable: false })
+  @JoinColumn({ name: 'user_id' })
+  user_id: USER;
 
-  @ManyToOne(() => EVENT, event => event.bookings, { onDelete: 'CASCADE' })
-  event: Event;
+  @OneToOne(() => EVENT, (event) => event.id, { nullable: false })
+  @JoinColumn({ name: 'event_id' })
+  event_id: EVENT;
 
   @Column()
   seats_booked: number;

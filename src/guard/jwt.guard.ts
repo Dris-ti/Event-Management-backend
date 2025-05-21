@@ -1,21 +1,11 @@
-
-
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Observable } from 'rxjs';
 import {Request} from 'express';
-import { InjectRepository } from '@nestjs/typeorm';
-import { LOGIN } from './../db/entities/login.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-//v1.4.4-Inject JWT service here
-constructor(private jwtService:JwtService,
-  @InjectRepository
-              (LOGIN)
-          private login_Repo: Repository<LOGIN>
-){}
+constructor(private jwtService:JwtService) {}
 
   canActivate(
     context: ExecutionContext,
@@ -31,8 +21,8 @@ constructor(private jwtService:JwtService,
     //So the token is not empty so validation required!
     try{
         const payload = this.jwtService.verify(token, { secret: process.env.ACCESS_TOKEN_SECRET as string }); // Throw error in case of expired token or unavailable Token
-        request.userEmail = payload.email;
-        console.log("Paylod: " + request.userEmail);
+        request.user = payload;
+        console.log("Paylod: " + request.user);
 
     }catch(error){
       console.log("Paylod Error: " + error);
@@ -45,10 +35,10 @@ constructor(private jwtService:JwtService,
 
 function extractFromHeader(request: Request): string | undefined {
   // console.log("Incoming Headers:", request.headers);
-  console.log("Incoming Cookies:", request.cookies);
+  console.log("Incoming Cookies:", request.headers.cookie?.toString().split('=')[1]);
 
+  const cookieToken = request.headers.cookie?.toString().split('=')[1];
   const authHeader = request.headers.authorization?.split(' ')[1];
-  const cookieToken = request.cookies?.accessToken;
 
   console.log("Extracted AuthHeader: " + authHeader);
   console.log("Extracted CookieToken: " + cookieToken);

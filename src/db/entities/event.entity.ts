@@ -1,17 +1,12 @@
 import {
   Entity,
   PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  OneToMany
+  Column
 } from 'typeorm';
-import { BOOKING } from './booking.entity';
 
-@Entity('events')
+@Entity()
 export class EVENT {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column()
@@ -29,15 +24,12 @@ export class EVENT {
   @Column({ type: 'time', nullable: true })
   time: string;
 
-  @Column()
-  total_seats: number;
+  @Column({default: 10})
+  max_seats: number;
 
   @Column()
   available_seats: number;
 
   @Column({ nullable: true })
   image_url: string;
-
-  @OneToMany(() => BOOKING, booking => booking.event)
-  bookings: BOOKING[];
 }

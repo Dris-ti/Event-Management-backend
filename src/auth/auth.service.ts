@@ -21,6 +21,7 @@ export class AuthService {
     private emailService: EmailService,
   ) {}
 
+
   passwordHassing(password: string) {
     return bcrypt.hash(password, 10);
   }
@@ -136,5 +137,18 @@ export class AuthService {
       message: 'User registered successfully.',
       status: 201,
     };
+  }
+
+  async logout(req, res) {
+    // Clear the cookie
+    res.clearCookie('accessToken', {
+      httpOnly: true,
+      sameSite: 'none',
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Logout Successful.',
+    });
   }
 }
