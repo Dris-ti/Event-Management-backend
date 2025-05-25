@@ -35,15 +35,29 @@ constructor(private jwtService:JwtService) {}
 }
 
 function extractFromHeader(request: Request): string | undefined {
-  // console.log("Incoming Headers:", request.headers);
-  console.log("Incoming Cookies:", request.headers.cookie?.toString().split('=')[1]);
+  const cookieHeader = request.headers.cookie;
 
-  const cookieToken = request.headers.cookie?.toString().split('=')[1];
+  // Extract token from Authorization header if available
   const authHeader = request.headers.authorization?.split(' ')[1];
+  if (authHeader) {
+    console.log("Extracted AuthHeader: " + authHeader);
+    return authHeader;
+  }
 
-  console.log("Extracted AuthHeader: " + authHeader);
-  console.log("Extracted CookieToken: " + cookieToken);
+  // Extract token from cookies if Authorization header not present
+  if (cookieHeader) {
+    const cookies = cookieHeader.split('; ').reduce<Record<string, string>>((acc, current) => {
+      const [key, value] = current.split('=');
+      acc[key] = value;
+      return acc;
+    }, {});
 
-  return authHeader || cookieToken;
+    const cookieToken = cookies['accessToken'];
+    console.log("Extracted CookieToken: " + cookieToken);
+    return cookieToken;
+  }
+
+  return undefined;
 }
+
 

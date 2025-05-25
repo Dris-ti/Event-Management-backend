@@ -107,7 +107,7 @@ export class UserService {
     console.log("seat" + seat.seat);
 
     // update the event's total seats
-    event.available_seats = event.max_seats - seat.seat;
+    event.available_seats = event.available_seats - seat.seat;
     await this.event_Repo.update(id, { available_seats: event.available_seats });
 
     // create a new booking
