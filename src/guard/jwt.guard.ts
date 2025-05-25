@@ -12,6 +12,7 @@ constructor(private jwtService:JwtService) {}
   ): boolean | Promise<boolean> | Observable<boolean> {
     
     const request = context.switchToHttp().getRequest();
+    console.log("Request Headers: " + JSON.stringify(request.headers));
     const token = extractFromHeader(request);
     console.log("Token: " + token);
     if(!token){

@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsDateString, IsNumber } from 'class-validator';
+import { IsString, IsOptional, IsDateString, IsNumber, IsArray } from 'class-validator';
 
 export class EventDto {
   @IsString()
@@ -27,4 +27,9 @@ export class EventDto {
   @IsOptional()
   @IsString()
   image_url?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tag?: string[] | string; 
 }

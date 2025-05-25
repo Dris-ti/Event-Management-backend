@@ -1,10 +1,27 @@
+import { UserService } from './../user/user.service';
+import { LOGIN } from './entities/login.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { USER } from './entities/user.entity';
+import { EVENT } from './entities/event.entity';
+import { BOOKING } from './entities/booking.entity';
+import { UserModule } from 'src/user/user.module';
+import { AdminModule } from 'src/admin/admin.module';
+import { AuthModule } from 'src/auth/auth.module';
+import { UserController } from 'src/user/user.controller';
+import { AdminController } from 'src/admin/admin.controller';
+import { JwtService } from '@nestjs/jwt';
+import { AdminService } from 'src/admin/admin.service';
+import { AuthService } from 'src/auth/auth.service';
+import { AuthController } from 'src/auth/auth.controller';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([
-          
+          USER,
+          LOGIN,
+          EVENT,
+          BOOKING
         ]), 
         TypeOrmModule.forRoot(
 
@@ -23,7 +40,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         ),
       ],
       exports: [TypeOrmModule], 
-      controllers: [],
-      providers: [],
+      controllers: [UserController, AdminController, AuthController],
+      providers: [JwtService, UserService, AdminService, AuthService],
 })
 export class DbModule {}

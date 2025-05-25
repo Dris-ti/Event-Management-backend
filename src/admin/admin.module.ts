@@ -10,14 +10,20 @@ import { USER } from 'src/db/entities/user.entity';
 import { EVENT } from 'src/db/entities/event.entity';
 import { JwtService } from '@nestjs/jwt';
 import { EmailService } from 'src/email/email.service';
+import { UserController } from 'src/user/user.controller';
+import { UserService } from 'src/user/user.service';
+import { AuthService } from 'src/auth/auth.service';
+import { AuthController } from 'src/auth/auth.controller';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
       DbModule,
       TypeOrmModule.forFeature([LOGIN, USER, EVENT]),
-      EmailModule
+      EmailModule,
+      AuthModule
     ],
-  controllers: [AdminController],
-  providers: [AdminService, JwtService,EmailService]
+  controllers: [AdminController, AuthController],
+  providers: [AdminService, JwtService,EmailService, AuthService]
 })
 export class AdminModule {}

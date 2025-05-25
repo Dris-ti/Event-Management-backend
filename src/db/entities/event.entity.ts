@@ -1,8 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class EVENT {
@@ -24,7 +20,7 @@ export class EVENT {
   @Column({ type: 'time', nullable: true })
   time: string;
 
-  @Column({default: 10})
+  @Column({ default: 10 })
   max_seats: number;
 
   @Column()
@@ -32,4 +28,7 @@ export class EVENT {
 
   @Column({ nullable: true })
   image_url: string;
+
+  @Column('text', { array: true, nullable: true })
+  tag?: string[];
 }

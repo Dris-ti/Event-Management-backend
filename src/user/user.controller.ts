@@ -35,7 +35,7 @@ export class UserController {
         @Req() req,
         @Res() res,
         @Param('id') id: string,
-        @Body() seat)
+        @Body() seat : number)
         {
             return this.UserService.eventBooking(req, res, id, seat);
         }

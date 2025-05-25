@@ -5,8 +5,6 @@ import { LOGIN } from '../db/entities/login.entity';
 import * as bcrypt from 'bcrypt';
 import { SignUpDTO } from './dtos/signup.dto';
 import { USER } from 'src/db/entities/user.entity';
-import { stat } from 'fs';
-import { EmailService } from 'src/email/email.service';
 import { LogInDTO } from './dtos/login.dto';
 import * as jwt from 'jsonwebtoken';
 
@@ -17,10 +15,7 @@ export class AuthService {
     private login_Repo: Repository<LOGIN>,
     @InjectRepository(USER)
     private user_Repo: Repository<USER>,
-
-    private emailService: EmailService,
   ) {}
-
 
   passwordHassing(password: string) {
     return bcrypt.hash(password, 10);
@@ -40,6 +35,7 @@ export class AuthService {
       {
         id: user.id,
         email: user.email,
+        type: user.user_id.user_type
       },
       secret, // Secret
       {
@@ -57,11 +53,14 @@ export class AuthService {
       relations: ['user_id'],
     });
 
+    console.log('user', user);
+
     if (!user) {
       return res.status(401).json({
         success: false,
-        //secure: true, // true for HTTPS
-        sameSite: 'none', // this is a must for cross-origin cookies
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
         error: {
           message: 'The email or password you entered is incorrect.',
         },
@@ -83,11 +82,11 @@ export class AuthService {
     // Generate tokens
     const accessToken = this.generateAccessToken(user);
 
-    // Cannot modify cookies from the client site
+
     const options = {
       httpOnly: true,
-      //secure: true,
-      sameSite: 'none',
+      secure: true,
+      sameSite: 'lax',
     };
 
     return res
@@ -97,6 +96,7 @@ export class AuthService {
       .json({
         success: true,
         message: 'User logged in successfully.',
+        data: user.user_id.user_type,
       });
   }
 
@@ -143,7 +143,8 @@ export class AuthService {
     // Clear the cookie
     res.clearCookie('accessToken', {
       httpOnly: true,
-      sameSite: 'none',
+      secure: true,
+      sameSite: 'lax',
     });
 
     return res.status(200).json({

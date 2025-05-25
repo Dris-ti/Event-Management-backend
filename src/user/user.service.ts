@@ -26,7 +26,7 @@ export class UserService {
     return res.status(200).json({
       message: 'All Future Events Fetched Successfully.',
       success: true,
-      data: events.length > 0 ? events : 'No Future Events Found',
+      data: events,
     });
   }
 
@@ -38,7 +38,7 @@ export class UserService {
     return res.status(200).json({
       message: 'All Past Events Fetched Successfully.',
       success: true,
-      data: events.length > 0 ? events : 'No Past Events Found',
+      data: events,
     });
   }
 
@@ -79,7 +79,7 @@ export class UserService {
   }
 
   async eventBooking(req, res, id, seat) {
-       console.log("seat" + seat.seat);
+    console.log("seat : " + seat.seat);
     const event = await this.event_Repo.findOne({
       where: { id: id },
     });

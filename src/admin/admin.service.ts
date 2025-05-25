@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EVENT } from 'src/db/entities/event.entity';
 import { USER } from 'src/db/entities/user.entity';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { EventDto } from './dtos/event.dto';
 
 @Injectable()
@@ -18,6 +18,8 @@ export class AdminService {
     async checkAdmin(req) {
         const userEmail = req.user.email;
         const user = await this.user_Repo.findOne({where: {email: userEmail}});
+
+        console.log("user", user);
 
         if (user?.user_type != 'admin') {
           return false;
@@ -53,8 +55,16 @@ export class AdminService {
           message: 'Unauthorized access.',
         });
       }
+      if (typeof data.tag === 'string') {
+        data.tag = data.tag
+          .split(',')
+          .map(tag => tag.trim())
+          .filter(tag => tag.length > 0);
+      }
 
-      const newEvent = this.event_Repo.create(data);
+      // Type-cast the DTO to match EVENT entity
+      const newEvent = this.event_Repo.create(data as unknown as DeepPartial<EVENT>);
+
       await this.event_Repo.save(newEvent);
 
       return res.status(201).json({
@@ -82,7 +92,7 @@ export class AdminService {
           success: false,
         });
       }
-      await this.event_Repo.update(id, data);
+      await this.event_Repo.update(id, data as unknown as DeepPartial<EVENT>);
 
       return res.status(200).json({
         message: 'Event Updated Successfully.',

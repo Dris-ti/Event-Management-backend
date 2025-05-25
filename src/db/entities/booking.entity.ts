@@ -16,11 +16,11 @@ export class BOOKING {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @OneToOne(() => USER, (user) => user.id, { nullable: false })
+  @ManyToOne(() => USER, { nullable: false })
   @JoinColumn({ name: 'user_id' })
   user_id: USER;
 
-  @OneToOne(() => EVENT, (event) => event.id, { nullable: false })
+  @ManyToOne(() => EVENT, { nullable: false })
   @JoinColumn({ name: 'event_id' })
   event_id: EVENT;
 
