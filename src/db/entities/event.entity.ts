@@ -27,7 +27,7 @@ export class EVENT {
   available_seats: number;
 
   @Column({ nullable: true })
-  image_url: string;
+  image_url?: string;
 
   @Column('text', { array: true, nullable: true })
   tag?: string[];

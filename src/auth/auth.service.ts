@@ -35,7 +35,8 @@ export class AuthService {
       {
         id: user.id,
         email: user.email,
-        type: user.user_id.user_type
+        name: user.user_id.name,
+        type: user.user_id.user_type,
       },
       secret, // Secret
       {
@@ -81,7 +82,6 @@ export class AuthService {
 
     // Generate tokens
     const accessToken = this.generateAccessToken(user);
-
 
     const options = {
       httpOnly: true,
@@ -150,6 +150,21 @@ export class AuthService {
     return res.status(200).json({
       success: true,
       message: 'Logout Successful.',
+    });
+  }
+
+  async getUserInfo(req, res) {
+    const user = await this.user_Repo.findOne({
+      where: { email: req.email },
+    });
+
+    if (!user) {
+      return res.status(401).json({ message: 'User not Found!' });
+    }
+    return res.status(201).json({
+      message: 'Email exits',
+      status: 200,
+      data: user,
     });
   }
 }
