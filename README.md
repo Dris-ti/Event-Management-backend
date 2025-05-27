@@ -69,6 +69,10 @@ DB_PASS=password
 
 ACCESS_TOKEN_SECRET=secret
 ACCESS_TOKEN_EXPIRY=expiredate
+
+CLOUDINARY_CLOUD_NAME=cloude_name
+CLOUDINARY_API_KEY=key
+CLOUDINARY_API_SECRET=secret
 ```
 
 ## License

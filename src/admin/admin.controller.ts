@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthGuard } from 'src/guard/jwt.guard';
 import { AdminService } from './admin.service';
 import { EventDto } from './dtos/event.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerConfig } from './multer';
 
 @Controller('admin')
 export class AdminController {
@@ -15,9 +17,16 @@ export class AdminController {
 
     @UseGuards(AuthGuard)
     @Post("/createEvent")
-    createEvent(@Body() data : EventDto, @Req() req, @Res() res)
+    @UseInterceptors(FileInterceptor('image_url', multerConfig))
+    createEvent(
+        @Body() data : EventDto, 
+        @UploadedFile() file,
+        @Req() req, 
+        @Res() res)
     {
-        return this.adminService.createEvent(data, req, res);
+        console.log('BODY DATA:', data);
+console.log('FILE:', file);
+        return this.adminService.createEvent(data, file, req, res);
     }
 
     @UseGuards(AuthGuard)
@@ -40,4 +49,5 @@ export class AdminController {
     {
         return this.adminService.deleteEvent(id, req, res);
     }
+
 }

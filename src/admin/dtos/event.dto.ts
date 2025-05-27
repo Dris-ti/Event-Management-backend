@@ -19,14 +19,14 @@ export class EventDto {
   time?: string;
 
   @IsNumber()
-  total_seats: number;
+  max_seats: number;
 
   @IsNumber()
   available_seats: number;
 
-  @IsOptional()
-  @IsString()
-  image_url?: string;
+  // @IsOptional()
+  // @IsString()
+  // image_url?: string;
 
   @IsOptional()
   @IsArray()

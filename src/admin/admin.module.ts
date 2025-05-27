@@ -15,13 +15,15 @@ import { UserService } from 'src/user/user.service';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthController } from 'src/auth/auth.controller';
 import { AuthModule } from 'src/auth/auth.module';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
       DbModule,
       TypeOrmModule.forFeature([LOGIN, USER, EVENT]),
       EmailModule,
-      AuthModule
+      AuthModule,
+      CloudinaryModule
     ],
   controllers: [AdminController, AuthController],
   providers: [AdminService, JwtService,EmailService, AuthService]

@@ -14,6 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AdminService } from 'src/admin/admin.service';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthController } from 'src/auth/auth.controller';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 @Module({
     imports: [
@@ -38,6 +39,7 @@ import { AuthController } from 'src/auth/auth.controller';
             logging:false,
           },
         ),
+        CloudinaryModule
       ],
       exports: [TypeOrmModule], 
       controllers: [UserController, AdminController, AuthController],
