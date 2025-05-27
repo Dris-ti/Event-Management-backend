@@ -15,7 +15,7 @@ export class AdminService {
     @InjectRepository(USER)
     private user_Repo: Repository<USER>,
 
-    private readonly cloudinaryService: CloudinaryService
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async checkAdmin(req) {
@@ -51,7 +51,7 @@ export class AdminService {
 
   async createEvent(data: EventDto, file, req, res) {
     console.log('BODY DATA:', data);
-console.log('FILE:', file);
+    console.log('FILE:', file);
 
     const admin = await this.checkAdmin(req);
 
@@ -94,7 +94,8 @@ console.log('FILE:', file);
     });
   }
 
-  async editEvent(data: EventDto, id, req, res) {
+  async editEvent(file, id, req, res) {
+    const body = req.body;
     const admin = await this.checkAdmin(req);
 
     if (!admin) {
@@ -112,12 +113,48 @@ console.log('FILE:', file);
         success: false,
       });
     }
-    await this.event_Repo.update(id, data as unknown as DeepPartial<EVENT>);
+
+    let imageUrl = event.image_url;
+
+    if (file) {
+      const uploadResult = await this.cloudinaryService.uploadImage(file.path);
+
+      if (!uploadResult) {
+        return res.status(500).json({
+          message: 'Image upload failed.',
+          success: false,
+        });
+      }
+
+      imageUrl = uploadResult.secure_url;
+    }
+
+    // Ensure tag is always an array if present
+    let tag = body.tag;
+    if (typeof tag === 'string') {
+      tag = tag
+        .split(',')
+        .map((t) => t.trim())
+        .filter((t) => t.length > 0);
+    }
+
+    const updatedEvent = this.event_Repo.create({
+      ...event, // existing fields
+      ...body,
+      tag: tag,
+      image_url: imageUrl, 
+    });
+
+    await this.event_Repo.update(id, {
+      ...body,
+      tag: tag,
+      image_url: imageUrl,
+    } as DeepPartial<EVENT>);
 
     return res.status(200).json({
       message: 'Event Updated Successfully.',
       success: true,
-      data: data,
+      data: updatedEvent,
     });
   }
 

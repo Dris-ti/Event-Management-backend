@@ -31,9 +31,15 @@ console.log('FILE:', file);
 
     @UseGuards(AuthGuard)
     @Post("/editEvent/:id")
-    editEvent(@Body() data : EventDto, @Param("id") id, @Req() req, @Res() res)
+    @UseInterceptors(FileInterceptor('image_url', multerConfig))
+    editEvent(
+        @UploadedFile() file,
+        @Param("id") id, 
+        @Req() req, 
+        @Res() res)
+
     {
-        return this.adminService.editEvent(data, id, req, res);
+        return this.adminService.editEvent(file, id, req, res);
     }
 
     @UseGuards(AuthGuard)
